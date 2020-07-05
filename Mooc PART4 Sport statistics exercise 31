@@ -1,0 +1,97 @@
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class SportStatistics {
+
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        //take file name from user.
+        System.out.println("File:");
+        String file = scan.nextLine();
+
+        //try to find the file user entered
+        ArrayList<Teams> winnerTeam = new ArrayList<>();
+        //two variables to calculat the wins and games.
+        int games = 0;
+        int wins = 0;
+        System.out.println("Team:");
+        String teamName = scan.nextLine();
+        try ( Scanner read = new Scanner(Paths.get(file))) {
+            while (read.hasNextLine()) {
+
+                String line = read.nextLine();
+                //string list splited by (",") devided to four parts and asighn it to variables
+                String[] parts = line.split(",");
+                String fTeamName = parts[0];
+                String sTeamName = parts[1];
+                int fTeamScore = Integer.valueOf(parts[2]);
+                int sTeamScore = Integer.valueOf(parts[3]);
+
+                //to search and calculat the games for the team name user enter.
+                if (fTeamName.equals(teamName) || sTeamName.equals(teamName)) {
+                    games++;
+                }
+                //to add the winner team only to the array list
+                if (fTeamScore > sTeamScore) {
+
+                    winnerTeam.add(new Teams(fTeamName, fTeamScore));
+
+                } else {
+
+                    winnerTeam.add(new Teams(sTeamName, sTeamScore));
+                }
+
+            }
+
+            // foreach loop to check the team name user enterd from the winner array list
+            for (Teams team : winnerTeam) {
+                //if condition to search for the team name in the winner list if it match it will add wins one at the time  
+                if (team.getName().equals(teamName)) {
+                    //add win
+                    wins++;
+
+                }
+            }
+            //print all 
+            System.out.println("Games: " + games);
+            System.out.println("Wins: " + wins);
+            System.out.println("Losses: " + (games - wins));
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+    }
+
+}
+
+
+//make a separate class
+
+public class Teams {
+
+    private String name;
+    private int gameScore;
+
+    public Teams(String initialName, int initialGameScore) {
+        this.name = initialName;
+        this.gameScore = initialGameScore;
+
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getScore() {
+
+        return this.gameScore;
+    }
+
+    @Override
+    public String toString() {
+        return "Team: " + this.name + " Team scores: " + this.gameScore;
+    }
+
+}
